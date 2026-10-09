@@ -8,6 +8,8 @@ import { Intro } from "@/components/site/intro";
 import { MotionRoot } from "@/components/motion/motion-root";
 import { SITE } from "@/lib/content";
 import { fontVariables } from "@/lib/fonts";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { serializeJsonLd, siteSchema } from "@/lib/seo/schema";
 
 /**
  * The public site's root layout.
@@ -22,26 +24,36 @@ import { fontVariables } from "@/lib/fonts";
  */
 
 export const metadata: Metadata = {
+  ...pageMetadata({
+    title: "PR & Digital Marketing Agency in Hyderabad | Hashmetrik",
+    description: SITE.description,
+    path: "/",
+    absoluteTitle: true,
+  }),
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Hashmetrik — PR & digital marketing agency in Hyderabad",
-    template: "%s — Hashmetrik",
+    default: "PR & Digital Marketing Agency in Hyderabad | Hashmetrik",
+    template: "%s | Hashmetrik",
   },
-  description: SITE.description,
-  openGraph: {
-    type: "website",
-    siteName: SITE.name,
-    title: "Hashmetrik — measurable growth, not guesswork",
-    description: SITE.description,
-    url: SITE.url,
-    images: ["/icon-512.png"],
+  applicationName: SITE.name,
+  robots: {
+    index: process.env.VERCEL_ENV !== "preview",
+    follow: true,
+    googleBot: {
+      index: process.env.VERCEL_ENV !== "preview",
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hashmetrik — measurable growth, not guesswork",
-    description: SITE.description,
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
   },
-  alternates: { canonical: "/" },
+  icons: {
+    icon: [{ url: "/icon-512.png", sizes: "512x512", type: "image/png" }],
+    apple: [{ url: "/icon-512.png", sizes: "512x512", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {
@@ -52,6 +64,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={fontVariables}>
       <body className="flex min-h-dvh flex-col antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(siteSchema) }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-70 focus:label focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-bone"

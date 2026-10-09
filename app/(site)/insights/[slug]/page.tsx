@@ -4,6 +4,15 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getPublished } from "@/lib/cms/store";
 import { safeUrl } from "@/lib/url";
+import { SITE } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo/metadata";
+import {
+  articleDescription,
+  breadcrumbSchema,
+  canonicalUrl,
+  organizationId,
+  serializeJsonLd,
+} from "@/lib/seo/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -14,19 +23,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const entry = await getPublished(slug).catch(() => null);
-  if (!entry) return { title: "Not found" };
+  if (!entry) notFound();
 
-  return {
+  return pageMetadata({
     title: entry.title,
-    description: entry.excerpt ?? undefined,
-    openGraph: {
-      title: entry.title,
-      description: entry.excerpt ?? undefined,
-      type: "article",
+    description: articleDescription(entry.excerpt, entry.body),
+    path: `/insights/${entry.slug}`,
+    image: safeUrl(entry.coverUrl),
+    article: entry.type === "blog" || entry.type === "case_study" ? {
       publishedTime: entry.publishedAt?.toISOString(),
-      images: entry.coverUrl ? [entry.coverUrl] : undefined,
-    },
-  };
+      modifiedTime: entry.updatedAt.toISOString(),
+    } : undefined,
+  });
 }
 
 export default async function InsightPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -38,6 +46,27 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
   if (!entry) notFound();
 
   const cover = safeUrl(entry.coverUrl);
+  const url = canonicalUrl(`/insights/${entry.slug}`);
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": entry.type === "blog" ? "BlogPosting" : entry.type === "case_study" ? "Article" : "WebPage",
+    "@id": `${url}#content`,
+    headline: entry.title,
+    description: articleDescription(entry.excerpt, entry.body),
+    url,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    datePublished: entry.publishedAt?.toISOString(),
+    dateModified: entry.updatedAt.toISOString(),
+    inLanguage: "en-IN",
+    ...(cover && { image: cover }),
+    author: { "@type": "Organization", name: `${SITE.name} team`, url: canonicalUrl("/insights") },
+    publisher: { "@id": organizationId },
+  };
+  const breadcrumbs = breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Insights", path: "/insights" },
+    { name: entry.title, path: `/insights/${entry.slug}` },
+  ]);
   const paragraphs = entry.body
     .split(/\n\s*\n/)
     .map((paragraph) => paragraph.trim())
@@ -49,6 +78,14 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
 
   return (
     <article className="flex-1">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbs) }}
+      />
       <header className="border-b border-ash">
         <div className="mx-auto w-full max-w-3xl px-6 pt-10 pb-12 md:px-10 md:pt-14 md:pb-16">
           <Link
@@ -73,6 +110,7 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
           )}
 
           <p className="label-sm mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-slate">
+            <span>{SITE.name} team</span>
             {entry.publishedAt && (
               <time dateTime={entry.publishedAt.toISOString()} className="tabular">
                 {new Intl.DateTimeFormat("en-GB", {
@@ -96,7 +134,7 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={cover}
-          alt=""
+          alt={`Cover image for ${entry.title}`}
           loading="lazy"
           className="mx-auto mt-10 w-full max-w-4xl px-6 md:mt-14 md:px-10"
         />

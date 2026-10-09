@@ -1,18 +1,12 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { LinksHub } from "@/components/links/links-hub";
 
-export const metadata: Metadata = {
-  title: "All our links",
+export const metadata = pageMetadata({
+  title: "Social Profiles & Contact Links",
   description:
     "Every way to reach Hashmetrik in one place: Instagram, LinkedIn, YouTube, Facebook, WhatsApp, phone, email and the studio address.",
-  alternates: { canonical: "/links" },
-  openGraph: {
-    title: "Hashmetrik — all our links",
-    description: "Follow us, message us, or book a free consultation.",
-    url: "/links",
-    images: ["/icon-512.png"],
-  },
-};
+  path: "/links",
+});
 
 export default function LinksPage() {
   return <LinksHub />;

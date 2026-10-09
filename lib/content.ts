@@ -6,10 +6,10 @@
 
 export const SITE = {
   name: "Hashmetrik",
-  url: "https://hashmetrik.com",
+  url: "https://www.hashmetrik.in",
   tagline: "Everything your brand needs. One growth partner.",
   description:
-    "Hashmetrik is a Hyderabad-based growth partner. Brand foundation, digital presence, marketing growth and brand reach — built as one customised package and reported as one set of numbers.",
+    "Grow your brand with Hashmetrik, a PR and digital marketing agency in Hyderabad offering SEO, social media, performance marketing and website development.",
 } as const;
 
 export const CONTACT = {

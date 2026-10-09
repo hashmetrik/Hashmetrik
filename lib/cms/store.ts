@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { prisma } from "@/lib/db";
 
 import type { ContentType } from "./schema";
@@ -25,19 +26,19 @@ export async function listContent(type?: string) {
 }
 
 /** Published only — what the public site is allowed to see. */
-export async function listPublished(type: ContentType) {
+export async function listPublished(type?: ContentType) {
   return prisma.cMSContent.findMany({
-    where: { type, publishedAt: { not: null } },
+    where: { ...(type && { type }), publishedAt: { not: null } },
     orderBy: { publishedAt: "desc" },
-    select: { slug: true, title: true, excerpt: true, coverUrl: true, publishedAt: true },
+    select: { slug: true, title: true, excerpt: true, coverUrl: true, publishedAt: true, updatedAt: true },
   });
 }
 
-export async function getPublished(slug: string) {
+export const getPublished = cache(async (slug: string) => {
   return prisma.cMSContent.findFirst({
     where: { slug, publishedAt: { not: null } },
   });
-}
+});
 
 export async function upsertContent(input: {
   id?: string;

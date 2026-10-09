@@ -18,6 +18,7 @@ import NotFound from "./(site)/not-found";
 export const metadata: Metadata = {
   title: "Page not found — Hashmetrik",
   description: "That page has moved or never existed.",
+  robots: { index: false, follow: true },
 };
 
 export default function GlobalNotFound() {

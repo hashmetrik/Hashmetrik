@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Hero } from "@/components/home/hero";
 import { GrowthPackage } from "@/components/home/growth-package";
 import { Audiences } from "@/components/home/audiences";
@@ -8,15 +7,18 @@ import { Faq } from "@/components/home/faq";
 import { ContactBand } from "@/components/home/contact-band";
 import { SectionScroll } from "@/components/site/section-link";
 import { FAQS, SITE } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { serializeJsonLd } from "@/lib/seo/schema";
 
-export const metadata: Metadata = {
-  title: "Hashmetrik — everything your brand needs, one growth partner",
+export const metadata = pageMetadata({
+  title: "PR & Digital Marketing Agency in Hyderabad | Hashmetrik",
   description: SITE.description,
-  alternates: { canonical: "/" },
-};
+  path: "/",
+  absoluteTitle: true,
+});
 
-/* The FAQ is the one block of copy worth exposing to search as structured
-   data — these are the questions people actually type. */
+/* Matches the visible questions. FAQ rich results are restricted by Google;
+   this describes the content without promising that search presentation. */
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -44,7 +46,7 @@ export default function HomePage() {
       <ContactBand />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
     </>
   );

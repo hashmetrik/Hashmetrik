@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact/contact-form";
 import { ActionLink } from "@/components/site/button";
@@ -6,12 +6,12 @@ import { MarkField } from "@/components/site/mark-field";
 import { Tape } from "@/components/site/tape";
 import { CONTACT, SOCIALS } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Contact",
+export const metadata = pageMetadata({
+  title: "Contact Our Hyderabad Team",
   description:
-    "Talk to Hashmetrik. Phone, email, WhatsApp and our Hyderabad studio — we reply within two business hours.",
-  alternates: { canonical: "/contact" },
-};
+    "Contact Hashmetrik's Hyderabad team for PR, SEO and digital marketing. Reach us by phone, email or WhatsApp, or visit our Hayathnagar studio.",
+  path: "/contact",
+});
 
 const ROWS = [
   { icon: Phone, label: "Call", value: CONTACT.phoneDisplay, href: `tel:${CONTACT.phone}` },

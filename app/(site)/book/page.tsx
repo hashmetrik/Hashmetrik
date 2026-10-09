@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { BookingFlow } from "@/components/book/booking-flow";
 import { MarkField } from "@/components/site/mark-field";
 
-export const metadata: Metadata = {
-  title: "Book a free consultation",
+export const metadata = pageMetadata({
+  title: "Free Digital Marketing Consultation",
   description:
     "Book a free 30-minute growth consultation with a senior Hashmetrik strategist. Pick a service, choose a slot, and get a written growth thesis within 48 hours.",
-  alternates: { canonical: "/book" },
-};
+  path: "/book",
+});
 
 export default function BookPage() {
   return (

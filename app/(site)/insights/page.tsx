@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { listPublished } from "@/lib/cms/store";
 import { MarkField } from "@/components/site/mark-field";
 import { Tape } from "@/components/site/tape";
 
-export const metadata: Metadata = {
-  title: "Insights",
-  description: "Writing and case studies from the Hashmetrik team.",
-};
+export const metadata = pageMetadata({
+  title: "Digital Marketing Insights & Case Studies",
+  description: "Explore digital marketing insights and case studies from Hashmetrik's Hyderabad team, covering brand strategy, PR, SEO and measurable business growth.",
+  path: "/insights",
+});
 
 /* Rebuilt on demand rather than at build time, so publishing something in the
    admin makes it live without a deploy. `revalidatePath` in the CMS action is

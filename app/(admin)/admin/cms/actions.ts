@@ -65,8 +65,9 @@ export async function saveContent(
 
   revalidatePath("/admin/cms");
   /* The public pages read this content, so their cache has to go too. */
-  revalidatePath(`/${slug}`);
-  revalidatePath("/blog");
+  revalidatePath("/insights");
+  revalidatePath("/insights/[slug]", "page");
+  revalidatePath("/sitemap.xml");
   return { ok: `Saved "${title}".` };
 }
 
@@ -78,5 +79,7 @@ export async function removeContent(formData: FormData): Promise<void> {
   await deleteContent(id);
   await audit({ actorId: admin.id, action: "cms.delete", entity: "CMSContent", entityId: id });
   revalidatePath("/admin/cms");
-  revalidatePath("/blog");
+  revalidatePath("/insights");
+  revalidatePath("/insights/[slug]", "page");
+  revalidatePath("/sitemap.xml");
 }

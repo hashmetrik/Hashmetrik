@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  headers() {
+    const noindex = [{ key: "X-Robots-Tag", value: "noindex, nofollow" }];
+    return process.env.VERCEL_ENV === "preview"
+      ? [{ source: "/:path*", headers: noindex }]
+      : ["/admin/:path*", "/dashboard/:path*", "/team/:path*", "/api/:path*", "/login", "/signup", "/suspended"]
+          .map((source) => ({ source, headers: noindex }));
+  },
   /* Route changes are crossfaded by React's <ViewTransition>; the animation
      itself is in globals.css under "Page transitions". */
   experimental: {
